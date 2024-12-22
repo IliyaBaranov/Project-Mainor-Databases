@@ -95,7 +95,16 @@
 
 ## Скриншоты
 
-*(Добавьте сюда скриншоты системы, чтобы показать интерфейс и функциональность)*
+Создание и логин пользователя
+![check1](https://github.com/user-attachments/assets/2d8a1519-2cbc-4c87-bf9c-707b92727afc)
+Работа "Поиска"
+![check2](https://github.com/user-attachments/assets/d584f153-a5b2-4d61-94d4-e0d327b453c4)
+Добавление записи
+![check3](https://github.com/user-attachments/assets/f47be1fd-f3d9-4be2-84e5-ac9119dc68ec)
+Редактирование записи
+![check4](https://github.com/user-attachments/assets/504751b8-89c9-4597-9cc5-333e66aeda54)
+Удаление записи
+![check5](https://github.com/user-attachments/assets/382f5d17-ffa2-4a55-99f9-27176cd43008)
 
 ## Автор
 
