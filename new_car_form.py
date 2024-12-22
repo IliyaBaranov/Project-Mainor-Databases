@@ -143,11 +143,32 @@ class NewCarForm(QDialog):
             return
 
         # Главные поля
-        main = {key: (field.text()) for key, field in self.input_fields.items()}
+        main = {
+            "mark_name": self.input_mark.text(),
+            "model_name": self.input_model.text(),
+            "country": self.combo_country.currentText(),
+            "car_class": self.combo_class.currentText(),
+            "body_type": self.combo_body_type.currentText(),
+            "year_from": self.input_year_from.text(),
+            "year_to": self.input_year_to.text(),
+            "price": self.input_price.text(),
+        }
         # Поля стайлинга
-        styling = {key: (field.text() if field else "Не указано") for key, field in self.styling_fields.items()}
+        styling = {
+            "generation": self.generation.text(),
+            "generation_year_from": self.generation_year_from.text(),
+            "generation_year_to": self.generation_year_to.text(),
+        }
         # Дополнительные характеристики
-        specs = {key: (field.currentText() if isinstance(field, QComboBox) else field.text()) or "Не указано" for key, field in self.additional_fields.items()}
+        specs = {
+            "engine_type": self.engine_type.currentText(),
+            "transmission": self.transmission.currentText(),
+            "drive": self.drive.currentText(),
+            "horse_power": self.horse_power.text(),
+            "volume": self.volume.text(),
+            "consumption_mixed": self.consumption_mixed.text(),
+            "max_speed": self.max_speed.text(),
+        }
 
         try:
             with sqlite3.connect('cars.db') as conn:
@@ -208,3 +229,4 @@ class NewCarForm(QDialog):
                 return False
 
         return True
+
