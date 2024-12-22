@@ -115,6 +115,4 @@
 
 ![check5](https://github.com/user-attachments/assets/382f5d17-ffa2-4a55-99f9-27176cd43008)
 
-## Автор
-
-Разработчик: *Illia Baranov*
+## Разработчик: *Illia Baranov*
