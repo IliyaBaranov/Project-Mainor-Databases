@@ -14,16 +14,16 @@ class SearchForm(QWidget):
         self.init_ui()
 
     def init_ui(self):
-        self.setWindowTitle("Поиск автомобилей")
+        self.setWindowTitle("Car Search")
         self.layout = QVBoxLayout()
 
-        # Словарь для конфигурации полей
+        # Dictionary for field configuration
         fields = [
-            ("Марка машины:", "input_brand", QComboBox, self.update_all_fields),
-            ("Страна:", "input_country", QComboBox, None),
-            ("Модель:", "input_model", QComboBox, self.update_classes_and_bodies),
-            ("Класс автомобиля:", "input_class", QComboBox, None),
-            ("Тип кузова:", "input_body", QComboBox, None),
+            ("Car Brand:", "input_brand", QComboBox, self.update_all_fields),
+            ("Country:", "input_country", QComboBox, None),
+            ("Model:", "input_model", QComboBox, self.update_classes_and_bodies),
+            ("Car Class:", "input_class", QComboBox, None),
+            ("Body Type:", "input_body", QComboBox, None),
         ]
 
         for label_text, attr_name, widget_class, signal_handler in fields:
@@ -37,20 +37,20 @@ class SearchForm(QWidget):
             if signal_handler:
                 widget.currentIndexChanged.connect(signal_handler)
 
-        # Поля года выпуска
-        self.layout.addWidget(QLabel("Год выпуска (от - до):"))
+        # Fields for production years
+        self.layout.addWidget(QLabel("Production Year (from - to):"))
         self.input_year_from = QLineEdit()
         self.input_year_to = QLineEdit()
         self.layout.addWidget(self.input_year_from)
         self.layout.addWidget(self.input_year_to)
 
-        # Кнопки
+        # Buttons
         buttons = [
-            ("Поиск", self.perform_search),
-            ("Новый автомобиль", self.open_new_car_form),
-            ("Изменение данных", self.update_record),
-            ("Удаление автомобиля", self.delete_car_by_id),
-            ("Выход", self.close),
+            ("Search", self.perform_search),
+            ("New Car", self.open_new_car_form),
+            ("Edit Data", self.update_record),
+            ("Delete Car", self.delete_car_by_id),
+            ("Exit", self.close),
         ]
 
         for btn_text, btn_handler in buttons:
@@ -58,23 +58,23 @@ class SearchForm(QWidget):
             button.clicked.connect(btn_handler)
             self.layout.addWidget(button)
 
-        # Группа для результатов поиска
-        self.result_group = QGroupBox("Результаты поиска")
+        # Group for search results
+        self.result_group = QGroupBox("Search Results")
         self.result_layout = QFormLayout()
         self.result_group.setLayout(self.result_layout)
         self.layout.addWidget(self.result_group)
         self.result_group.hide()
 
-        # Установка основного макета
+        # Set main layout
         self.setLayout(self.layout)
 
-        # Заполнение поля "Марка машины" и обновление других полей
+        # Populate "Car Brand" field and update other fields
         self.populate_combobox(self.input_brand, "SELECT DISTINCT name FROM marks")
         self.update_all_fields()
 
     def populate_combobox(self, combobox, query, params=()):
         combobox.clear()
-        combobox.addItem("")  # Добавить пустое значение
+        combobox.addItem("")  # Add empty value
         try:
             conn = sqlite3.connect('cars.db', check_same_thread=False)
             cursor = conn.cursor()
@@ -84,21 +84,21 @@ class SearchForm(QWidget):
                 for row in results:
                     combobox.addItem(row[0])
         except sqlite3.Error as e:
-            QMessageBox.critical(self, "Ошибка", f"Ошибка базы данных: {e}")
+            QMessageBox.critical(self, "Error", f"Database Error: {e}")
         finally:
             conn.close()
 
     def update_all_fields(self):
         brand = self.input_brand.currentText()
 
-        # Обновление стран
+        # Update countries
         if brand:
             query = "SELECT DISTINCT country FROM marks WHERE name = ?"
             self.populate_combobox(self.input_country, query, (brand,))
         else:
             self.populate_combobox(self.input_country, "SELECT DISTINCT country FROM marks")
 
-        # Обновление моделей
+        # Update models
         if brand:
             query = """
                 SELECT DISTINCT models.name
@@ -115,7 +115,7 @@ class SearchForm(QWidget):
     def update_classes_and_bodies(self):
         model = self.input_model.currentText()
 
-        # Обновление класса
+        # Update class
         if model:
             query = """
                 SELECT DISTINCT class
@@ -126,7 +126,7 @@ class SearchForm(QWidget):
         else:
             self.populate_combobox(self.input_class, "SELECT DISTINCT class FROM models")
 
-        # Обновление кузова
+        # Update body type
         if model:
             query = """
                 SELECT DISTINCT body_type
@@ -204,10 +204,10 @@ class SearchForm(QWidget):
                 self.search_result_window = SearchResultWindow(results)
                 self.search_result_window.exec_()
             else:
-                QMessageBox.information(self, "Результаты поиска", "Нет данных для отображения.")
+                QMessageBox.information(self, "Search Results", "No data to display.")
 
         except sqlite3.Error as e:
-            QMessageBox.critical(self, "Ошибка", f"Ошибка базы данных: {e}")
+            QMessageBox.critical(self, "Error", f"Database Error: {e}")
         finally:
             if conn:
                 conn.close()

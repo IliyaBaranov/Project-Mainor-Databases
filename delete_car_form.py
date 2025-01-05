@@ -5,25 +5,25 @@ import sqlite3
 class DeleteCarForm(QDialog):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Удаление из Specifications")
+        self.setWindowTitle("Delete from Specifications")
         self.init_ui()
 
     def init_ui(self):
         layout = QVBoxLayout()
 
-        # Поле для ввода ID Specifications
-        self.label_id = QLabel("Введите ID Specifications для удаления:")
+        # Field for entering ID of Specifications
+        self.label_id = QLabel("Enter the ID of Specifications to delete:")
         self.input_delete_id = QLineEdit()
-        self.input_delete_id.setPlaceholderText("ID Specifications")
+        self.input_delete_id.setPlaceholderText("Specifications ID")
 
-        # Кнопки
-        self.btn_delete = QPushButton("Удалить")
+        # Buttons
+        self.btn_delete = QPushButton("Delete")
         self.btn_delete.clicked.connect(self.delete_specification)
 
-        self.btn_cancel = QPushButton("Отмена")
+        self.btn_cancel = QPushButton("Cancel")
         self.btn_cancel.clicked.connect(self.close)
 
-        # Добавляем элементы в макет
+        # Adding elements to the layout
         layout.addWidget(self.label_id)
         layout.addWidget(self.input_delete_id)
         layout.addWidget(self.btn_delete)
@@ -34,36 +34,36 @@ class DeleteCarForm(QDialog):
     def delete_specification(self):
         specification_id = self.input_delete_id.text().strip()
 
-        # Проверяем, что ID — числовое
+        # Check if the ID is numeric
         if not specification_id.isdigit():
-            QMessageBox.warning(self, "Ошибка", "Введите корректный ID Specifications.")
+            QMessageBox.warning(self, "Error", "Please enter a valid Specifications ID.")
             return
 
         try:
-            # Подключаемся к базе данных
+            # Connect to the database
             conn = sqlite3.connect('cars.db')
             cursor = conn.cursor()
 
-            # Проверяем, существует ли запись с таким ID в таблице Specifications
+            # Check if a record with the specified ID exists in the Specifications table
             cursor.execute("SELECT id FROM Specifications WHERE id = ?", (specification_id,))
             if not cursor.fetchone():
-                QMessageBox.warning(self, "Ошибка", f"Запись с ID {specification_id} не найдена в Specifications.")
+                QMessageBox.warning(self, "Error", f"No record found with ID {specification_id} in Specifications.")
                 return
 
-            # Удаляем запись из таблицы Specifications
+            # Delete the record from the Specifications table
             cursor.execute("DELETE FROM Specifications WHERE id = ?", (specification_id,))
 
-            # Подтверждаем транзакцию
+            # Commit the transaction
             conn.commit()
 
-            # Уведомляем пользователя об успешном удалении
-            QMessageBox.information(self, "Успех", f"Запись с ID {specification_id} успешно удалена из Specifications.")
+            # Notify the user of the successful deletion
+            QMessageBox.information(self, "Success", f"Record with ID {specification_id} was successfully deleted from Specifications.")
 
         except sqlite3.Error as e:
-            # Откатываем транзакцию в случае ошибки
+            # Rollback the transaction in case of an error
             conn.rollback()
-            QMessageBox.critical(self, "Ошибка", f"Ошибка базы данных: {e}")
+            QMessageBox.critical(self, "Error", f"Database error: {e}")
 
         finally:
-            # Закрываем соединение с базой данных
+            # Close the database connection
             conn.close()

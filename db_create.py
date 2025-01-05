@@ -2,22 +2,22 @@ import sqlite3
 import json
 import random
 
-# Загружаем данные из JSON файла
+# Load data from the JSON file
 with open('base_demo.json', 'r', encoding='utf-8') as file:
     data = json.load(file)
 
-# Создаем подключение к SQLite и курсор
+# Create a connection to SQLite and a cursor
 with sqlite3.connect('cars.db') as conn:
     cursor = conn.cursor()
 
-    # Создаем таблицы
+    # Create tables
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS Marks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
             country TEXT
         )
-        ''')
+    ''')
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS Models (
@@ -30,7 +30,7 @@ with sqlite3.connect('cars.db') as conn:
             mark_id INTEGER,
             FOREIGN KEY (mark_id) REFERENCES Marks(id)
         )
-        ''')
+    ''')
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS Generations (
@@ -41,7 +41,7 @@ with sqlite3.connect('cars.db') as conn:
             model_id INTEGER,
             FOREIGN KEY (model_id) REFERENCES Models(id)
         )
-        ''')
+    ''')
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS Specifications (
@@ -57,20 +57,20 @@ with sqlite3.connect('cars.db') as conn:
             model_id INTEGER,
             FOREIGN KEY (model_id) REFERENCES Models(id)
         )
-        ''')
+    ''')
 
-    # Функция для добавления данных
+    # Function to insert data
     def insert_data():
         for mark in data:
-            # Вставляем марку и получаем id
+            # Insert mark and get its id
             cursor.execute(
                 'INSERT INTO Marks (name, country) VALUES (?, ?)',
                 (mark.get('name'), mark.get('country'))
             )
-            mark_id = cursor.lastrowid  # Получаем сгенерированный id марки
+            mark_id = cursor.lastrowid  # Get the generated id of the mark
 
             for model in mark.get('models', []):
-                # Получаем body_type из первого поколения
+                # Get body_type from the first generation
                 body_type = (
                     model.get('generations', [{}])[0]
                     .get('configurations', [{}])[0]
@@ -87,7 +87,7 @@ with sqlite3.connect('cars.db') as conn:
                         mark_id
                     )
                 )
-                model_id = cursor.lastrowid  # Получаем id модели
+                model_id = cursor.lastrowid  # Get the id of the model
 
                 for generation in model.get('generations', []):
                     cursor.execute(
@@ -103,7 +103,7 @@ with sqlite3.connect('cars.db') as conn:
                     for configuration in generation.get('configurations', []):
                         for modification in configuration.get('modifications', []):
                             specs = modification.get('specifications', {})
-                            random_price = random.randint(20, 500) * 100  # Генерируем случайную цену кратную 100
+                            random_price = random.randint(20, 500) * 100  # Generate a random price rounded to 100
                             cursor.execute(
                                 'INSERT INTO Specifications (engine_type, horse_power, transmission, drive, volume, consumption_mixed, max_speed, price, model_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                                 (
@@ -119,8 +119,8 @@ with sqlite3.connect('cars.db') as conn:
                                 )
                             )
 
-    # Вставляем данные
+    # Insert data
     insert_data()
     conn.commit()
 
-print("Данные успешно загружены в базу данных.")
+print("Data successfully loaded into the database.")

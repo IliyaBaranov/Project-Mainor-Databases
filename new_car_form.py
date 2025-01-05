@@ -5,12 +5,12 @@ from PyQt5.QtWidgets import (QLabel, QLineEdit, QPushButton, QVBoxLayout, QMessa
 
 def fetch_data(query, combo_box=None):
     """
-    Выполняет SQL-запрос и возвращает данные.
-    Если передан combo_box, добавляет данные в выпадающий список.
+    Executes an SQL query and returns the data.
+    If a combo_box is provided, populates it with the data.
 
-    :param query: SQL-запрос для выполнения.
-    :param combo_box: Виджет QComboBox (опционально).
-    :return: Список значений из результата запроса.
+    :param query: SQL query to execute.
+    :param combo_box: QComboBox widget (optional).
+    :return: List of values from the query result.
     """
     try:
         with sqlite3.connect('cars.db') as conn:
@@ -18,35 +18,35 @@ def fetch_data(query, combo_box=None):
             cursor.execute(query)
             results = [row[0] for row in cursor.fetchall()]
 
-            if combo_box:  # Если передан combo_box, заполняем его данными
+            if combo_box:  # If combo_box is provided, populate it with data
                 combo_box.addItems(results)
 
             return results
     except sqlite3.Error as e:
-        print(f"Ошибка выполнения запроса: {e}")
+        print(f"Error executing query: {e}")
         return []
 
 
 class NewCarForm(QDialog):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Новый автомобиль")
+        self.setWindowTitle("New Car")
         self.setup_ui()
 
     def setup_ui(self):
         self.layout = QVBoxLayout()
 
         self.input_widget = self.create_input_widget()
-        # Чекбоксы
-        self.checkbox_styling = self.create_checkbox("Стайлинг", self.toggle_styling_params)
+        # Checkboxes
+        self.checkbox_styling = self.create_checkbox("Styling", self.toggle_styling_params)
         self.styling_widget = self.create_styling_widget()
 
-        self.checkbox_additional = self.create_checkbox("Дополнительные параметры", self.toggle_additional_params)
+        self.checkbox_additional = self.create_checkbox("Additional Parameters", self.toggle_additional_params)
         self.additional_widget = self.create_additional_widget()
 
-        # Кнопки управления
-        self.create_button("Сохранить", self.save_new_car)
-        self.create_button("Выход", self.close)
+        # Control buttons
+        self.create_button("Save", self.save_new_car)
+        self.create_button("Exit", self.close)
 
         self.setLayout(self.layout)
 
@@ -80,21 +80,21 @@ class NewCarForm(QDialog):
         self.layout.addWidget(button)
 
     def create_input_widget(self):
-        # Создаем основной виджет
+        # Create the main widget
         widget = QWidget()
         layout = QVBoxLayout()
         widget.setLayout(layout)
         self.layout.addWidget(widget)
 
         self.input_fields = {}
-        self.add_field(layout, "Марка:", "input_mark", "line_edit")
-        self.add_field(layout, "Модель:", "input_model", "line_edit")
-        self.add_field(layout, "Страна производства:", "combo_country", "combo_box", lambda cb: cb.addItems(fetch_data("SELECT DISTINCT country FROM Marks")))
-        self.add_field(layout, "Класс автомобиля:", "combo_class", "combo_box", lambda cb: cb.addItems(fetch_data("SELECT DISTINCT class FROM Models WHERE class IS NOT NULL")))
-        self.add_field(layout, "Тип кузова:", "combo_body_type", "combo_box", lambda cb: cb.addItems(fetch_data("SELECT DISTINCT body_type FROM Models WHERE body_type IS NOT NULL")))
-        self.add_field(layout, "Год начала производства:", "input_year_from", "line_edit")
-        self.add_field(layout, "Год окончания производства:", "input_year_to", "line_edit")
-        self.add_field(layout, "Цена:", "input_price", "line_edit")
+        self.add_field(layout, "Brand:", "input_mark", "line_edit")
+        self.add_field(layout, "Model:", "input_model", "line_edit")
+        self.add_field(layout, "Country of Manufacture:", "combo_country", "combo_box", lambda cb: cb.addItems(fetch_data("SELECT DISTINCT country FROM Marks")))
+        self.add_field(layout, "Car Class:", "combo_class", "combo_box", lambda cb: cb.addItems(fetch_data("SELECT DISTINCT class FROM Models WHERE class IS NOT NULL")))
+        self.add_field(layout, "Body Type:", "combo_body_type", "combo_box", lambda cb: cb.addItems(fetch_data("SELECT DISTINCT body_type FROM Models WHERE body_type IS NOT NULL")))
+        self.add_field(layout, "Start Year of Production:", "input_year_from", "line_edit")
+        self.add_field(layout, "End Year of Production:", "input_year_to", "line_edit")
+        self.add_field(layout, "Price:", "input_price", "line_edit")
 
         return widget
 
@@ -106,9 +106,9 @@ class NewCarForm(QDialog):
         self.layout.addWidget(widget)
 
         self.styling_fields = {}
-        self.add_field(layout, "Поколение:", "generation", "line_edit")
-        self.add_field(layout, "Год начала поколения:", "generation_year_from", "line_edit")
-        self.add_field(layout, "Год окончания поколения:", "generation_year_to", "line_edit")
+        self.add_field(layout, "Generation:", "generation", "line_edit")
+        self.add_field(layout, "Generation Start Year:", "generation_year_from", "line_edit")
+        self.add_field(layout, "Generation End Year:", "generation_year_to", "line_edit")
 
         return widget
 
@@ -120,13 +120,13 @@ class NewCarForm(QDialog):
         self.layout.addWidget(widget)
 
         self.additional_fields = {}
-        self.add_field(layout, "Двигатель:", "engine_type", "combo_box", lambda cb: cb.addItems(fetch_data("SELECT DISTINCT engine_type FROM Specifications WHERE engine_type IS NOT NULL")))
-        self.add_field(layout, "КПП (трансмиссия):", "transmission", "combo_box", lambda cb: cb.addItems(fetch_data("SELECT DISTINCT transmission FROM Specifications WHERE transmission IS NOT NULL")))
-        self.add_field(layout, "Привод:", "drive", "combo_box", lambda cb: cb.addItems(fetch_data("SELECT DISTINCT drive FROM Specifications WHERE drive IS NOT NULL")))
-        self.add_field(layout, "Л.С.:", "horse_power", "line_edit")
-        self.add_field(layout, "Объём двигателя:", "volume", "line_edit")
-        self.add_field(layout, "Потребление на 100 км:", "consumption_mixed", "line_edit")
-        self.add_field(layout, "Макс. скорость:", "max_speed", "line_edit")
+        self.add_field(layout, "Engine:", "engine_type", "combo_box", lambda cb: cb.addItems(fetch_data("SELECT DISTINCT engine_type FROM Specifications WHERE engine_type IS NOT NULL")))
+        self.add_field(layout, "Transmission:", "transmission", "combo_box", lambda cb: cb.addItems(fetch_data("SELECT DISTINCT transmission FROM Specifications WHERE transmission IS NOT NULL")))
+        self.add_field(layout, "Drive:", "drive", "combo_box", lambda cb: cb.addItems(fetch_data("SELECT DISTINCT drive FROM Specifications WHERE drive IS NOT NULL")))
+        self.add_field(layout, "Horsepower:", "horse_power", "line_edit")
+        self.add_field(layout, "Engine Volume:", "volume", "line_edit")
+        self.add_field(layout, "Fuel Consumption (per 100 km):", "consumption_mixed", "line_edit")
+        self.add_field(layout, "Max Speed:", "max_speed", "line_edit")
 
         return widget
 
@@ -142,7 +142,7 @@ class NewCarForm(QDialog):
         if not self.validate_fields():
             return
 
-        # Главные поля
+        # Main fields
         main = {
             "mark_name": self.input_mark.text(),
             "model_name": self.input_model.text(),
@@ -153,13 +153,13 @@ class NewCarForm(QDialog):
             "year_to": self.input_year_to.text(),
             "price": self.input_price.text(),
         }
-        # Поля стайлинга
+        # Styling fields
         styling = {
             "generation": self.generation.text(),
             "generation_year_from": self.generation_year_from.text(),
             "generation_year_to": self.generation_year_to.text(),
         }
-        # Дополнительные характеристики
+        # Additional specifications
         specs = {
             "engine_type": self.engine_type.currentText(),
             "transmission": self.transmission.currentText(),
@@ -174,7 +174,7 @@ class NewCarForm(QDialog):
             with sqlite3.connect('cars.db') as conn:
                 cursor = conn.cursor()
 
-                # Вставка или получение ID марки
+                # Insert or get brand ID
                 cursor.execute("""
                     INSERT OR IGNORE INTO Marks (name, country)
                     VALUES (?, ?)
@@ -182,7 +182,7 @@ class NewCarForm(QDialog):
                 cursor.execute("SELECT id FROM Marks WHERE name = ?", (main["mark_name"],))
                 mark_id = cursor.fetchone()[0]
 
-                # Вставка модели
+                # Insert model
                 cursor.execute("""
                     INSERT INTO Models (name, year_from, year_to, class, body_type, mark_id)
                     VALUES (?, ?, ?, ?, ?, ?)
@@ -190,14 +190,14 @@ class NewCarForm(QDialog):
                       mark_id))
                 model_id = cursor.lastrowid
 
-                # Вставка поколения
+                # Insert generation
                 cursor.execute("""
                     INSERT INTO Generations (name, year_start, year_stop, model_id)
                     VALUES (?, ?, ?, ?)
                 """, (styling.get("generation"), styling.get("generation_year_from"), styling.get("generation_year_to"),
                       model_id))
 
-                # Вставка спецификаций
+                # Insert specifications
                 cursor.execute("""
                     INSERT INTO Specifications (engine_type, transmission, volume, consumption_mixed, max_speed, drive, horse_power, model_id, price)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -208,25 +208,24 @@ class NewCarForm(QDialog):
                 ))
 
                 conn.commit()
-                QMessageBox.information(self, "Успех", "Автомобиль успешно добавлен.")
+                QMessageBox.information(self, "Success", "Car successfully added.")
                 self.close()
 
         except sqlite3.Error as e:
-            QMessageBox.critical(self, "Ошибка", f"Ошибка базы данных: {e}")
+            QMessageBox.critical(self, "Error", f"Database error: {e}")
 
     def validate_fields(self):
         """
-        Проверяет обязательные поля на наличие данных.
+        Checks if the required fields have data.
         """
         required_fields = {
-            "Марка": self.input_mark.text(),
-            "Модель": self.input_model.text()
+            "Brand": self.input_mark.text(),
+            "Model": self.input_model.text()
         }
 
         for field_name, value in required_fields.items():
             if not value.strip():
-                QMessageBox.critical(self, "Ошибка", f"Поле \"{field_name}\" не должно быть пустым.")
+                QMessageBox.critical(self, "Error", f"The field \"{field_name}\" cannot be empty.")
                 return False
 
         return True
-

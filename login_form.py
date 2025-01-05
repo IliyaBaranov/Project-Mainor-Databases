@@ -1,7 +1,7 @@
 import sys
 import hashlib
 import sqlite3
-from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QMessageBox, QMenuBar, \
+from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QMessageBox, QMenuBar,
                              QMenu, QAction)
 from search_form import SearchForm
 
@@ -25,7 +25,7 @@ def initialize_db():
         """)
         conn.commit()
     except sqlite3.Error as e:
-        print(f"Ошибка базы данных при инициализации: {e}")
+        print(f"Database error during initialization: {e}")
     finally:
         if conn:
             conn.close()
@@ -45,7 +45,7 @@ def authenticate_user(login, password):
             return stored_hashed_password == hash_password(password)
         return False
     except sqlite3.Error as e:
-        print(f"Ошибка базы данных: {e}")
+        print(f"Database error: {e}")
         return False
     finally:
         if conn:
@@ -60,20 +60,20 @@ def add_user(name, login, password, add_user_form=None):
         query_check = "SELECT 1 FROM Employees WHERE login = ? LIMIT 1"
         cursor.execute(query_check, (login,))
         if cursor.fetchone():
-            QMessageBox.warning(None, "Ошибка", "Пользователь с таким логином уже существует!")
+            QMessageBox.warning(None, "Error", "A user with this login already exists!")
             return
 
         hashed_password = hash_password(password)
         query_insert = "INSERT INTO Employees (name, password, login) VALUES (?, ?, ?);"
         cursor.execute(query_insert, (name, hashed_password, login))
         conn.commit()
-        QMessageBox.information(None, "Успех", "Пользователь успешно добавлен!")
+        QMessageBox.information(None, "Success", "User successfully added!")
 
         if add_user_form:
             add_user_form.close()
 
     except sqlite3.Error as e:
-        QMessageBox.warning(None, "Ошибка", f"Ошибка базы данных: {e}")
+        QMessageBox.warning(None, "Error", f"Database error: {e}")
         sys.exit()
 
     finally:
@@ -104,23 +104,23 @@ class LoginForm(BaseForm):
         self.init_ui()
 
     def init_ui(self):
-        self.setWindowTitle("Авторизация")
+        self.setWindowTitle("Login")
 
         self.layout = QVBoxLayout()
 
         self.menubar = QMenuBar(self)
-        self.menu = QMenu("Файл", self)
-        self.new_user_action = QAction("Новый пользователь", self)
+        self.menu = QMenu("File", self)
+        self.new_user_action = QAction("New User", self)
         self.new_user_action.triggered.connect(self.open_add_user_form)
         self.menu.addAction(self.new_user_action)
         self.menubar.addMenu(self.menu)
         self.layout.setMenuBar(self.menubar)
 
-        self.input_login = self.add_label_and_input("Логин:")
-        self.input_password = self.add_label_and_input("Пароль:", is_password=True)
+        self.input_login = self.add_label_and_input("Login:")
+        self.input_password = self.add_label_and_input("Password:", is_password=True)
 
-        self.add_button("Войти", self.handle_login)
-        self.add_button("Выход", self.close)
+        self.add_button("Sign In", self.handle_login)
+        self.add_button("Exit", self.close)
 
         self.setLayout(self.layout)
 
@@ -129,12 +129,12 @@ class LoginForm(BaseForm):
         password = self.input_password.text()
 
         if authenticate_user(login, password):
-            QMessageBox.information(self, "Успех", "Авторизация успешна!")
+            QMessageBox.information(self, "Success", "Login successful!")
             self.search_form = SearchForm()
             self.search_form.show()
             self.hide()
         else:
-            QMessageBox.warning(self, "Ошибка", "Неверный логин или пароль!")
+            QMessageBox.warning(self, "Error", "Invalid login or password!")
 
     def open_add_user_form(self):
         self.add_user_form = AddUserForm()
@@ -147,16 +147,16 @@ class AddUserForm(BaseForm):
         self.init_ui()
 
     def init_ui(self):
-        self.setWindowTitle("Новый пользователь")
+        self.setWindowTitle("New User")
 
         self.layout = QVBoxLayout()
 
-        self.input_name = self.add_label_and_input("Имя:")
-        self.input_login = self.add_label_and_input("Логин:")
-        self.input_password = self.add_label_and_input("Пароль:", is_password=True)
+        self.input_name = self.add_label_and_input("Name:")
+        self.input_login = self.add_label_and_input("Login:")
+        self.input_password = self.add_label_and_input("Password:", is_password=True)
 
-        self.add_button("Добавить пользователя", self.handle_add_user)
-        self.add_button("Выход", self.close)
+        self.add_button("Add User", self.handle_add_user)
+        self.add_button("Exit", self.close)
 
         self.setLayout(self.layout)
 
@@ -168,7 +168,7 @@ class AddUserForm(BaseForm):
         if name and login and password:
             add_user(name, login, password, self)
         else:
-            QMessageBox.warning(self, "Ошибка", "Все поля должны быть заполнены!")
+            QMessageBox.warning(self, "Error", "All fields must be filled!")
 
 
 if __name__ == "__main__":
