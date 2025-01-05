@@ -97,22 +97,22 @@ The project aims to develop an automated car inventory system for dealerships. T
 
 User creation and login
 
-![check1](https://github.com/user-attachments/assets/2d8a1519-2cbc-4c87-bf9c-707b92727afc)
+![1_g](https://github.com/user-attachments/assets/e65738e1-c403-49df-acf7-e78ad9c87830)
 
 Search functionality
 
-![check2](https://github.com/user-attachments/assets/d584f153-a5b2-4d61-94d4-e0d327b453c4)
+![2_g](https://github.com/user-attachments/assets/adb9605c-b407-4df8-8681-551b23d8c020)
 
 Adding a record
 
-![check3](https://github.com/user-attachments/assets/f47be1fd-f3d9-4be2-84e5-ac9119dc68ec)
+![3_g](https://github.com/user-attachments/assets/c8c870b8-f53c-410d-aba6-58ccfa20e118)
 
 Editing a record
 
-![check4](https://github.com/user-attachments/assets/504751b8-89c9-4597-9cc5-333e66aeda54)
+![4_g](https://github.com/user-attachments/assets/2a740693-fbf3-4c8a-b5e7-b1fb36fe8cfb)
 
 Deleting a record
 
-![check5](https://github.com/user-attachments/assets/382f5d17-ffa2-4a55-99f9-27176cd43008)
+![5_g](https://github.com/user-attachments/assets/e94a401a-b11e-41b3-b697-11f680d60152)
 
 ## Developer: *Illia Baranov*
