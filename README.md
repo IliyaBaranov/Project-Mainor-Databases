@@ -1,41 +1,41 @@
-# Автоматизированная система учета автомобилей
+# Automated Car Inventory System
 
-## Описание проекта
+## Project Description
 
-Проект направлен на разработку автоматизированной системы учета автомобилей для автосалонов. Система позволяет:
+The project aims to develop an automated car inventory system for dealerships. The system provides the following functionalities:
 
-- Вести учет автомобилей с возможностью добавления, редактирования и удаления записей.
-- Обеспечивать удобный интерфейс для управления и фильтрации информации.
-- Хранить и управлять данными сотрудников и автомобилей.
-- Реализовывать авторизацию пользователей с использованием хеширования паролей.
+- Manage car records with the ability to add, edit, and delete entries.
+- Provide a user-friendly interface for managing and filtering information.
+- Store and manage data on employees and cars.
+- Implement user authentication using password hashing.
 
-## Преимущества
+## Advantages
 
-- Ускорение процесса подбора автомобиля для клиентов.
-- Автоматизация учета данных и снижение нагрузки на сотрудников.
-- Повышение точности учета и уровня обслуживания клиентов.
-- Полная интеграция с локальной базой данных автосалона.
+- Accelerates the car selection process for clients.
+- Automates data management and reduces employee workload.
+- Enhances the accuracy of inventory tracking and customer service.
+- Fully integrates with the dealership’s local database.
 
-## Технологический стек
+## Technology Stack
 
-- **База данных**: SQLite
-- **Язык программирования**: Python
-- **Библиотеки**:
-  - `hashlib` (хеширование паролей)
-  - `sqlite3` (работа с базой данных SQLite)
-  - `PyQt5` (создание графического интерфейса)
-  - `json` (работа с форматом данных JSON)
+- **Database**: SQLite
+- **Programming Language**: Python
+- **Libraries**:
+  - `hashlib` (password hashing)
+  - `sqlite3` (SQLite database interaction)
+  - `PyQt5` (GUI creation)
+  - `json` (JSON data handling)
 
-## Структура базы данных
+## Database Structure
 
-### Таблицы
+### Tables
 
-1. **Marks (Марки автомобилей):**
+1. **Marks (Car Brands):**
    - `id` (INTEGER, PRIMARY KEY)
    - `name` (TEXT)
    - `country` (TEXT)
 
-2. **Models (Модели автомобилей):**
+2. **Models (Car Models):**
    - `id` (INTEGER, PRIMARY KEY)
    - `name` (TEXT)
    - `class` (TEXT)
@@ -44,14 +44,14 @@
    - `body_type` (TEXT)
    - `mark_id` (INTEGER, FOREIGN KEY)
 
-3. **Generations (Поколения моделей):**
+3. **Generations (Model Generations):**
    - `id` (INTEGER, PRIMARY KEY)
    - `name` (TEXT)
    - `year_start` (INTEGER)
    - `year_stop` (INTEGER)
    - `model_id` (INTEGER, FOREIGN KEY)
 
-4. **Specifications (Характеристики автомобилей):**
+4. **Specifications (Car Specifications):**
    - `id` (INTEGER, PRIMARY KEY)
    - `engine_type` (TEXT)
    - `horse_power` (INTEGER)
@@ -63,56 +63,56 @@
    - `price` (REAL)
    - `model_id` (INTEGER, FOREIGN KEY)
 
-5. **Employees (Сотрудники автосалона):**
+5. **Employees (Dealership Employees):**
    - `id` (INTEGER, PRIMARY KEY)
    - `name` (TEXT)
    - `login` (TEXT)
-   - `password` (TEXT, хешированный)
+   - `password` (TEXT, hashed)
 
-## Установка
+## Installation
 
-1. Установите Python версии 3.8 или выше.
-2. Установите зависимости из файла `requirements.txt`:
+1. Install Python version 3.8 or higher.
+2. Install dependencies from the `requirements.txt` file:
    ```bash
    pip install -r requirements.txt
    ```
-3. Запустите скрипт для инициализации базы данных.
+3. Run the script to initialize the database.
 
-## Функционал
+## Features
 
-- Добавление, изменение, удаление данных автомобилей.
-- Авторизация пользователей с использованием хеширования паролей.
-- Фильтрация автомобилей по заданным параметрам.
-- Управление данными сотрудников автосалона.
+- Add, update, and delete car data.
+- User authentication using password hashing.
+- Filter cars based on specified parameters.
+- Manage dealership employee data.
 
-## Возможные улучшения
+## Potential Improvements
 
-- Добавление фотографий автомобилей.
-- Интеграция данных о прохождении техосмотра.
-- Поля для цвета автомобиля и его местонахождения.
-- Информация о техническом состоянии автомобилей.
-- Поддержка заметок и дополнительных вложений.
+- Add car images.
+- Integrate vehicle inspection records.
+- Include fields for car color and location.
+- Add information about the technical condition of cars.
+- Support notes and additional attachments.
 
-## Скриншоты
+## Screenshots
 
-Создание и логин пользователя
+User creation and login
 
 ![check1](https://github.com/user-attachments/assets/2d8a1519-2cbc-4c87-bf9c-707b92727afc)
 
-Работа "Поиска"
+Search functionality
 
 ![check2](https://github.com/user-attachments/assets/d584f153-a5b2-4d61-94d4-e0d327b453c4)
 
-Добавление записи
+Adding a record
 
 ![check3](https://github.com/user-attachments/assets/f47be1fd-f3d9-4be2-84e5-ac9119dc68ec)
 
-Редактирование записи
+Editing a record
 
 ![check4](https://github.com/user-attachments/assets/504751b8-89c9-4597-9cc5-333e66aeda54)
 
-Удаление записи
+Deleting a record
 
 ![check5](https://github.com/user-attachments/assets/382f5d17-ffa2-4a55-99f9-27176cd43008)
 
-## Разработчик: *Illia Baranov*
+## Developer: *Illia Baranov*
